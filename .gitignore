@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Ignore build files
+/.idea
+/app/build
+/out
