@@ -44,8 +44,8 @@ fun AdaptiveAuthForm(
         }
 
         config.submitButton(
-            onClick = { viewModel.login(onSuccess) },
-            enabled = !viewModel.isLoading
+            { viewModel.login(onSuccess) },
+            !viewModel.isLoading
         )
 
         viewModel.error?.let {
