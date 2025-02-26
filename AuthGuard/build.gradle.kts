@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.maven.publish)
 }
 
 android {
@@ -34,8 +35,21 @@ android {
     buildFeatures {
         compose = true
     }
-}
+    afterEvaluate {
+        publishing {
+            publications {
+                create<MavenPublication>("release") {
+                    from(components["release"])
 
+                    groupId = "com.github.Radon-hub"
+                    artifactId = "AuthGuard"
+                    version = "1.1.1"
+                }
+            }
+        }
+    }
+
+}
 dependencies {
 
     implementation(libs.androidx.core.ktx)
