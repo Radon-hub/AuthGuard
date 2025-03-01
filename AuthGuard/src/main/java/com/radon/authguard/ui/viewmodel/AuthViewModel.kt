@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.radon.authguard.domain.AuthGuard
+import com.radon.authguard.domain.AuthGuard.config
 import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
@@ -21,9 +22,10 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             try {
+                val combinedParams = formFields.toMap() + config.additionalLoginParams()
                 val response = AuthGuard.authService.login(
-                    "${AuthGuard.config.baseUrl}${AuthGuard.config.loginEndpoint}",
-                    formFields.toMap()
+                    "${config.baseUrl}${config.loginEndpoint}",
+                    combinedParams
                 )
                 AuthGuard.tokenManager.saveTokens(
                     response["access_token"]!!,

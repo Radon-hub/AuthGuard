@@ -15,8 +15,8 @@ okhttp = "5.0.0-alpha.14"
 security-crypto-ktx = "1.1.0-alpha06"
 kotlinx-serialization-json = "1.6.3"
 lifecycleRuntimeKtx = "2.8.5"
-activityCompose = "1.10.0"
-composeBom = "2025.02.00"
+activityCompose = "1.9.3"
+composeBom = "2024.05.00"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
