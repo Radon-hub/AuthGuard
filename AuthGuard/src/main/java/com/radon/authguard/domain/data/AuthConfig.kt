@@ -7,5 +7,6 @@ data class AuthConfig(
     val connectTimeoutMillis: Long = 30_000,
     val readTimeoutMillis: Long = 30_000,
     val onTokenInvalid: () -> Unit = {},
-    val additionalLoginParams: () -> Map<String, Any> = { emptyMap() }
+    val additionalLoginParams: () -> Map<String, String> = { emptyMap() },
+    val additionalRefreshParams: () -> Map<String, String> = { emptyMap() },
 )

@@ -1,18 +1,21 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.maven.publish)
 }
 
 android {
-    namespace = "com.radon.authguard"
+    namespace = "com.example.authguardtest"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 21
+        applicationId = "com.example.authguardtest"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -34,30 +37,19 @@ android {
     buildFeatures {
         compose = true
     }
-    afterEvaluate {
-        publishing {
-            publications {
-                create<MavenPublication>("release") {
-                    from(components["release"])
-
-                    groupId = "com.github.Radon-hub"
-                    artifactId = "AuthGuard"
-                    version = "1.1.1"
-                }
-            }
-        }
-    }
-
 }
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-
-    implementation(libs.koin.androidx.compose)
-
-    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(project(":AuthGuard"))
+    implementation(libs.compose)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.material3)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,10 +60,13 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.converter.gson)
 
-    implementation(libs.security.crypto.ktx)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.koin.androidx.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

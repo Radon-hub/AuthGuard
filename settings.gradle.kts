@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "authentication"
 include(":app")
 include(":AuthGuard")
+include(":authguardtest")

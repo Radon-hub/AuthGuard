@@ -1,13 +1,15 @@
 package com.radon.authguard.domain
 
 import android.content.Context
-import com.radon.authguard.domain.data.AuthConfig
 import com.radon.authguard.data.remote.AuthInterceptor
 import com.radon.authguard.data.remote.AuthService
+import com.radon.authguard.domain.data.AuthConfig
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+
 
 object AuthGuard  {
     lateinit var tokenManager: TokenManager
@@ -15,11 +17,19 @@ object AuthGuard  {
     lateinit var config: AuthConfig
     lateinit var client: OkHttpClient
 
+
     fun initialize(
         context: Context,
         configuration: AuthConfig,
         clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
     ) {
+
+        val logging = HttpLoggingInterceptor()
+
+        clientBuilder.addInterceptor(logging)
+
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+
         config = configuration
         tokenManager = TokenManager(context)
 

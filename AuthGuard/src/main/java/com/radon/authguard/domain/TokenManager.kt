@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
+import androidx.core.content.edit
 
 class TokenManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)
@@ -32,18 +33,32 @@ class TokenManager(context: Context) {
     }
 
     fun saveTokens(accessToken: String, refreshToken: String) {
-        sharedPrefs.edit()
-            .putString("access_token", accessToken)
-            .putString("refresh_token", refreshToken)
-            .apply()
+        sharedPrefs.edit {
+            putString("access_token", accessToken)
+            putString("refresh_token", refreshToken)
+        }
         _isLoggedIn.value = true
+    }
+
+    fun saveKeys(accessKey: String? = null, refreshKey: String? = null) {
+        sharedPrefs.edit {
+            accessKey?.let {
+                putString("access_key", it)
+            }
+            refreshKey?.let{
+                putString("refresh_key", it)
+            }
+        }
     }
 
     fun getAccessToken(): String? = sharedPrefs.getString("access_token", null)
     fun getRefreshToken(): String? = sharedPrefs.getString("refresh_token", null)
 
+    fun getAccessKey(): String? = sharedPrefs.getString("access_key", null)
+    fun getRefreshKey(): String? = sharedPrefs.getString("refresh_key", null)
+
     fun clearTokens() {
-        sharedPrefs.edit().clear().apply()
+        sharedPrefs.edit { clear() }
         _isLoggedIn.value = false
     }
 

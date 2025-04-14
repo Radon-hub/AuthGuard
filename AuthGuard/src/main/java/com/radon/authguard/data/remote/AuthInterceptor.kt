@@ -1,7 +1,9 @@
 package com.radon.authguard.data.remote
 
+import android.util.Log
 import com.radon.authguard.domain.TokenManager
 import com.radon.authguard.core.utils.Authenticated
+import com.radon.authguard.domain.AuthGuard
 import com.radon.authguard.domain.data.AuthConfig
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -20,7 +22,9 @@ class AuthInterceptor(
     private var retryCount = 0
 
     override fun intercept(chain: Interceptor.Chain): Response {
+
         val request = chain.request()
+
         val annotation = request.tag(Invocation::class.java)
             ?.method()?.getAnnotation(Authenticated::class.java)
 
@@ -28,15 +32,19 @@ class AuthInterceptor(
 
         // First attempt
         val response = try {
+            Log.e("AuthViewModel", "process with tokens in interceptor")
             proceedWithToken(request, chain)
         } catch (e: IOException) {
             return handleTokenError(e, chain, request)
         }
+        Log.e("AuthViewModel", "response : ${response.code}")
 
         // Handle 401
         if (response.code == 401) {
             return handleUnauthorized(chain, request)
         }
+
+        Log.e("AuthViewModel",  "come to end $response")
 
         return response
     }
@@ -76,14 +84,38 @@ class AuthInterceptor(
         val refreshToken = tokenManager.getRefreshToken()
             ?: throw IOException("No refresh token available")
 
+        Log.e("AuthViewModel", "come in refresh token")
+
         runBlocking {
+
+            val refreshField = mapOf((AuthGuard.tokenManager.getRefreshKey() ?: "") to (AuthGuard.tokenManager.getRefreshToken() ?: ""))
+
+            val combinedParams = refreshField + AuthGuard.config.additionalRefreshParams()
+
             val response = authService.refreshToken(
                 "${config.baseUrl}${config.refreshEndpoint}",
-                mapOf("refresh_token" to refreshToken)
+                    combinedParams
             )
+
+            var ResponseaccessToken = ""
+            var ResponserefreshToken = ""
+
+            response.body()?.forEach { map ->
+                if(map.key.contains("access")){
+                    ResponseaccessToken = map.value.toString()
+                    Log.e("AuthViewModel", "this is access $map")
+                }
+                if(map.key.contains("refresh")){
+                    ResponserefreshToken = map.value.toString()
+                    Log.e("AuthViewModel", "this is refresh $map")
+                }
+            }
+
+            Log.e("AuthViewModel", "getted token from refresh : access:$ResponseaccessToken refresh:$ResponserefreshToken")
+
             tokenManager.saveTokens(
-                response["access_token"] ?: throw IOException("Invalid token response"),
-                response["refresh_token"] ?: throw IOException("Invalid token response")
+                ResponseaccessToken,
+                ResponserefreshToken
             )
         }
     }

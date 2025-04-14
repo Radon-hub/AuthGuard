@@ -12,13 +12,13 @@ data class AuthFormConfig(
     // List of dynamic fields (e.g., email, phone, biometric data)
     val fields: List<FormFieldConfig> = listOf(
         FormFieldConfig(
-            key = "email",
-            label = "Email",
+            key = "username",
+            label = "UserName",
             component = { value, onValueChange ->
                 TextField(
                     value = value as? String ?: "",
                     onValueChange = { onValueChange(it) },
-                    label = { Text("Email") }
+                    label = { Text("UserName") }
                 )
             }
         ),
