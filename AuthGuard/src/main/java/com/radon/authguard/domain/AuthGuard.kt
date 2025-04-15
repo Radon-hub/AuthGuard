@@ -1,11 +1,19 @@
 package com.radon.authguard.domain
 
+import android.app.Application
 import android.content.Context
+import com.radon.authguard.core.di.ApiModule
+import com.radon.authguard.core.di.RepositoryModule
+import com.radon.authguard.core.di.RetrofitModule
+import com.radon.authguard.core.di.ViewModelModule
 import com.radon.authguard.data.remote.AuthInterceptor
 import com.radon.authguard.data.remote.AuthService
 import com.radon.authguard.domain.data.AuthConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -24,6 +32,19 @@ object AuthGuard  {
         clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
     ) {
 
+        val appContext = context.applicationContext as Application
+
+        startKoin {
+            androidLogger()
+            androidContext(appContext)
+            modules(
+                ApiModule,
+                RepositoryModule,
+                RetrofitModule,
+                ViewModelModule
+            )
+        }
+
         val logging = HttpLoggingInterceptor()
 
         clientBuilder.addInterceptor(logging)
@@ -31,7 +52,7 @@ object AuthGuard  {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         config = configuration
-        tokenManager = TokenManager(context)
+        tokenManager = TokenManager(appContext)
 
         val authInterceptor = AuthInterceptor(
             tokenManager,
