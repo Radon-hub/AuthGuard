@@ -14,7 +14,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.radon.authguard.domain.AuthGuard
 import com.radon.authguard.ui.viewmodel.AuthViewModel
 import com.radon.authguard.ui.data.AuthFormConfig
-import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
@@ -23,7 +22,7 @@ fun AdaptiveAuthForm(
     config: AuthFormConfig = AuthFormConfig(),
     onSuccess: () -> Unit,
     onError: (String) -> Unit,
-    viewModel: AuthViewModel = koinViewModel()
+    viewModel: AuthViewModel = AuthGuard.container.authViewModelFactory.create()
 ) {
 
     Column(modifier = modifier) {
