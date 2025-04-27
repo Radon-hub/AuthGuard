@@ -65,8 +65,11 @@ class MyApp : Application() {
 2. Basic Login Flow
 ```kotlin
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: AuthViewModel
+) {
     AdaptiveAuthForm(
+	viewModel = viewModel,
         onSuccess = { navController.navigate("home") },
         onError = { error -> showToast(error.message) }
     )
