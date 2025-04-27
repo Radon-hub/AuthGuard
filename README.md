@@ -121,6 +121,20 @@ viewModelScope.launch {
     }
 }
 ```
+Manual Login & Refresh
+```kotlin
+// Create view model
+val viewModel: AuthViewModel = AuthGuard.container.authViewModelFactory.create()
+
+// Force login
+viewModel.login{
+	// onSuccess
+}
+// Force refresh token
+viewModel.refresh{
+	// onSuccess
+}
+```
 Authentication State Observer
 ```kotlin
 @Composable
